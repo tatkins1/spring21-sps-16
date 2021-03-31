@@ -12,12 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Create the script tag, set the appropriate attributes
-var script = document.createElement('script');
-script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDZbsCASX6bRFXIojx2BUzeBcwI12oeuyU&callback=initMap';
-script.async = true;
-
-var map;
+let map;
 
 // Attach your callback function to the `window` object
 window.initMap = function() {
@@ -27,8 +22,6 @@ window.initMap = function() {
   });
 };
 
-// Append the 'script' element to 'head'
-document.head.appendChild(script);
 
 /**
  * The onload function sets the height for the
@@ -37,7 +30,7 @@ document.head.appendChild(script);
 window.onload = function() {
     const headerHeight = document.getElementById("header").offsetHeight;
     const footerHeight = document.getElementById("footer").offsetHeight;
-    var mapsHeight = document.body.scrollHeight - headerHeight - footerHeight;
+    let mapsHeight = document.body.scrollHeight - headerHeight - footerHeight;
     mapsHeight /= document.body.scrollHeight;
     mapsHeight *= 100;
     document.getElementById("maps").style.top = headerHeight + "px";
