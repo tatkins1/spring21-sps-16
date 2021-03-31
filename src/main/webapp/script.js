@@ -12,17 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Create the script tag, set the appropriate attributes
+var script = document.createElement('script');
+script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDZbsCASX6bRFXIojx2BUzeBcwI12oeuyU&callback=initMap';
+script.async = true;
+
+var map;
+
+// Attach your callback function to the `window` object
+window.initMap = function() {
+  map = new google.maps.Map(document.getElementById("maps"), {
+      center: { lat: 40.7484405, lng: -73.9878584 },
+      zoom: 4
+  });
+};
+
+// Append the 'script' element to 'head'
+document.head.appendChild(script);
+
 /**
- * Adds a random greeting to the page.
+ * The onload function sets the height for the
+ * maps DIV element.
  */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
-
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
+window.onload = function() {
+    const headerHeight = document.getElementById("header").offsetHeight;
+    const footerHeight = document.getElementById("footer").offsetHeight;
+    var mapsHeight = document.body.scrollHeight - headerHeight - footerHeight;
+    mapsHeight /= document.body.scrollHeight;
+    mapsHeight *= 100;
+    document.getElementById("maps").style.top = headerHeight + "px";
+    document.getElementById("maps").style.height = mapsHeight + "%";
 }
