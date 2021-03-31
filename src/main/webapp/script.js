@@ -21,18 +21,3 @@ window.initMap = function() {
       zoom: 4
   });
 };
-
-
-/**
- * The onload function sets the height for the
- * maps DIV element.
- */
-window.onload = function() {
-    const headerHeight = document.getElementById("header").offsetHeight;
-    const footerHeight = document.getElementById("footer").offsetHeight;
-    let mapsHeight = document.body.scrollHeight - headerHeight - footerHeight;
-    mapsHeight /= document.body.scrollHeight;
-    mapsHeight *= 100;
-    document.getElementById("maps").style.top = headerHeight + "px";
-    document.getElementById("maps").style.height = mapsHeight + "%";
-}

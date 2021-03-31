@@ -12,7 +12,15 @@ html, body {
 }
 
 #maps {
-    height: 100%;
+    /**
+    * top is set to the height of the header so that
+    * the map is displayed below the header instead of above
+    * it. Height is the remaning px after substracting the
+    * height of the header and footer from the total height of
+    * the page.
+    */
+    top: 51px;
+    height: calc(100% - 70px);
 }
 
 
