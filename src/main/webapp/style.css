@@ -1,9 +1,34 @@
-#content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 650px;
+html, body {
+    height: 100%;
+    margin: 0;
 }
 
-#greeting-container {
-  margin-top: 20px;
+#header {
+  background-color: burlywood;
+  left: 0;
+  right: 0;
+  position: absolute;
+  align-content: center;
 }
+
+#maps {
+    /**
+    * top is set to the height of the header so that
+    * the map is displayed below the header instead of above
+    * it. Height is the remaning px after substracting the
+    * height of the header and footer from the total height of
+    * the page.
+    */
+    top: 51px;
+    height: calc(100% - 70px);
+}
+
+
+#footer {
+  background-color: burlywood;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: fixed;
+}
+
