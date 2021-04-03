@@ -1,27 +1,98 @@
-html, body {
-    height: 100%;
+* {
     margin: 0;
+    padding: 0;
+    box-sizing: 0;
 }
 
-#header {
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    font-family: sans-serif;
+    overflow-y: hidden;  /* not sure if we wan't to hide the scroll bar? */
+}
+
+/* TopBar */
+header {
   background-color: burlywood;
-  left: 0;
-  right: 0;
-  position: absolute;
-  align-content: center;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+
+header .tabs {
+    display: flex;
+}
+
+.search-container {
+    width: fit-content;
+    margin: 20px auto;
+}
+
+header .tabs a {
+    padding: 20px 40px;
+    /* display: block; */
+    font-size: 21px;
+    white-space: nowrap;
+    outline: none;
+}
+
+.menu_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.tabs a.active {
+    border-bottom: 4px solid #000000;
+}
+
+/* Tab contents */
+.tabcontent {
+    padding: 40px;
+    max-width: 500px;
+    display: none;  /* default menu tabs removed */
+    position: absolute;
+    z-index: 1;
 }
 
 #maps {
-    /**
-    * top is set to the height of the header so that
-    * the map is displayed below the header instead of above
-    * it. Height is the remaning px after substracting the
-    * height of the header and footer from the total height of
-    * the page.
-    */
-    top: 51px;
-    height: calc(100% - 70px);
+    height: 100vh;
 }
+
+
+/* form css */
+.card_layout {
+    border-radius: 5px;
+    background-color: ghostwhite;
+    box-shadow: 0px 10px 40px 0px rgba(47, 47, 47, .1);
+    padding: 50px 35px 10px 35px;
+}
+
+.card_layout > h3 {
+  font-size: 35px;
+  font-weight: 600;
+  margin: 0 0 30px 0;
+}
+
+.form-container form {
+  display: flex;
+  width: 400%;  /* larger width for multiple sections*/
+}
+
+
+/* interests form tab_content*/
+.user_input {
+    display: grid;
+    grid-template-columns: 1fr 1fr
+} 
 
 
 #footer {
