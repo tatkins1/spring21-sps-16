@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>TouriFit</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
 </head>
 
 <body>
@@ -28,9 +27,47 @@
         <div class="tabcontent card_layout" id="interests">
             <h3 style=>What do you like to do?</h3>
             <div class="form_container">
-                <div class="page slide-page">
-                <form class="user_input" onsubmit="handleFormSubmit(event)">
-                </form>
+                <!-- Page 1 -->
+                <div class="page slide_page">
+                    <form class="user_input" onsubmit="handleFormSubmit(event)">
+                        <div class="label">
+              Last Name</div>
+            <input type="text">
+                    </form>
+                    <div class="form_control">
+                        <div class="button_skip" onclick="onSkipSelected(event)">Skip</div>
+                        <div class="button_next" onclick="onNextSelected(event)">Next</div>
+                    </div>
+                </div>
+
+                <!-- Page 2-->
+                <div class="page">
+                    <form class="user_input" onsubmit="handleFormSubmit(event)">
+                    </form>
+                    <div class="form_control">
+                        <div class="button_skip" onclick="onSkipSelected(event)">Skip 2</div>
+                        <div class="button_next" onclick="onNextSelected(event)">Next2</div>
+                    </div>
+                </div>
+                
+                <!-- Page 3-->
+                <div class="page">
+                    <form class="user_input" onsubmit="handleFormSubmit(event)">
+                    </form>
+                    <div class="form_control">
+                        <div class="button_skip" onclick="onSkipSelected(event)">Skip3</div>
+                        <div class="button_next" onclick="onNextSelected(event)">Next3</div>
+                    </div>
+                </div>
+
+                 <!-- Page 4-->
+                <div class="page">
+                    <form class="user_input" onsubmit="handleFormSubmit(event)">
+                    </form>
+                    <div class="form_control">
+                        <div class="button_skip" onclick="onSkipSelected(event)">Skip4</div>
+                        <div class="button_next" onclick="onNextSelected(event)">Next4</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -69,5 +106,5 @@
 <script async
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDZbsCASX6bRFXIojx2BUzeBcwI12oeuyU&callback=initMap">
     </script>
-
+<script src="script.js"></script>
 </html>

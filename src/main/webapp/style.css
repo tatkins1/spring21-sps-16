@@ -1,15 +1,16 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: 0;
+  margin: 0;
+  padding: 0;
+  box-sizing: 0;
 }
 
-html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    font-family: sans-serif;
-    overflow-y: hidden;  /* not sure if we wan't to hide the scroll bar? */
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  font-family: sans-serif;
+  overflow-y: hidden; /* not sure if we wan't to hide the scroll bar? */
 }
 
 /* TopBar */
@@ -21,79 +22,194 @@ header {
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-    align-content: center;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
 }
 
 header .tabs {
-    display: flex;
+  display: flex;
 }
 
 .search-container {
-    width: fit-content;
-    margin: 20px auto;
+  width: fit-content;
+  margin: 20px auto;
 }
 
 header .tabs a {
-    padding: 20px 40px;
-    /* display: block; */
-    font-size: 21px;
-    white-space: nowrap;
-    outline: none;
+  padding: 20px 40px;
+  /* display: block; */
+  font-size: 21px;
+  white-space: nowrap;
+  outline: none;
 }
 
 .menu_container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-
 .tabs a.active {
-    border-bottom: 4px solid #000000;
+  border-bottom: 4px solid #000000;
 }
 
 /* Tab contents */
 .tabcontent {
-    padding: 40px;
-    max-width: 500px;
-    display: none;  /* default menu tabs removed */
-    position: absolute;
-    z-index: 1;
+  padding: 40px;
+  max-width: 500px;
+  display: none; /* default menu tabs removed */
+  position: absolute;
+  z-index: 1;
 }
 
 #maps {
-    height: 100vh;
+  height: 100vh;
 }
-
 
 /* form css */
 .card_layout {
-    border-radius: 5px;
-    background-color: ghostwhite;
-    box-shadow: 0px 10px 40px 0px rgba(47, 47, 47, .1);
-    padding: 50px 35px 10px 35px;
+  border-radius: 5px;
+  background-color: ghostwhite;
+  box-shadow: 0px 10px 40px 0px rgba(47, 47, 47, 0.1);
+  padding: 50px 35px 10px 35px;
+  display: block; /* DEBUG */
+  overflow: hidden; /* DEBUG- preven overflow */
 }
 
 .card_layout > h3 {
   font-size: 35px;
   font-weight: 600;
   margin: 0 0 30px 0;
+  text-align: center;
 }
 
-.form-container form {
-  display: flex;
-  width: 400%;  /* larger width for multiple sections*/
+.activity_entry {
+  background-color: #e0e0e0;
+  display: block;
+  width: fit-content;
+  border-radius: 4px;
 }
 
+.activity_entry label {
+  border-radius: 4px;
+  padding: 20px 30px;
+  width: 150px;
+  display: block;
+  font-size: 18px;
+  line-height: 20px;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  transition: color 200ms ease-in;
+  overflow: hidden;
+  
+}
+
+.activity_entry label:before {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  content: "";
+  background-color: #373f41;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  /* transform: translate(-50%, -50%) scale3d(1, 1, 1); */
+  /* transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1); */
+  opacity: 0;
+  z-index: -1;
+}
+
+.activity_entry label:after {
+  width: 32px;
+  height: 32px;
+  content: "";
+  border: 2px solid #737b7d;
+  background-color: #e0e0e0;
+  background-position: 3px 3.5px;
+  border-radius: 50%;
+  z-index: 2;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: all 200ms ease-in;
+}
+
+.activity_entry input:checked ~ label {
+  color: #fff;
+}
+.activity_entry input:checked ~ label:before {
+  transform: translate(-50%, -50%) scale3d(56, 56, 1);
+  opacity: 1;
+}
+.activity_entry input:checked ~ label:after {
+      background-color: #f8f8ff;
+    border-color: #f8f8ff;
+    background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23373F41' fill-rule='nonzero'/%3E%3C/svg%3E ");
+    background-repeat: no-repeat;
+    background-position: 3px 3.5px;
+    transform: translateY(-50%);
+    transition: all 200ms ease-in;
+}
+.activity_entry input {
+  /* width: 32px; */
+  /* height: 32px; */
+  /* order: 1; */
+  /* z-index: 2; */
+  position: absolute;
+  /* right: 30px; */
+  /* top: 50%; */
+  /* transform: translateY(-50%); */
+  /* cursor: pointer; */
+  visibility: hidden;
+}
 
 /* interests form tab_content*/
 .user_input {
-    display: grid;
-    grid-template-columns: 1fr 1fr
-} 
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px 30px;
+}
 
+/* interests form tab_content*/
+.user_input {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+
+.form_control {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px;
+}
+/* skip button */
+.button_skip{
+   font-weight: 600;
+   cursor: pointer;
+}
+
+.button_next{
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button_submit {
+    /* display: none; */
+}
+
+.form_container {
+  display: flex;
+  width: 400%; /* larger width for multiple sections*/
+}
+
+.form_container .page{
+  width: 25%;
+  transition: margin-left 0.3s ease-in-out;
+}
 
 #footer {
   background-color: burlywood;
@@ -102,4 +218,3 @@ header .tabs a {
   right: 0;
   position: fixed;
 }
-

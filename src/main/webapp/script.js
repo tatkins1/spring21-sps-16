@@ -22,7 +22,7 @@ window.initMap = function () {
     });
 };
 
-let interests = ['running', 'hiking', 'eating', 'walking', 'hiking'];
+let interests = ['Cycling', 'Running', 'Hiking', 'Yoga', 'Aerobics', 'Weight Lifting', 'Walking', 'Pilates'];
 
 function openMenu(event, tabName) {
     // find relevant nodes
@@ -58,30 +58,49 @@ function handleFormSubmit(event) {
     results = JSON.stringify(formJSON, null, 2);
     console.log("results", results);
 
-       
-        
     // send over to api
-
 }
-
-
 
 
 function createUserInterestsForm(defaultInterests) {
     var html = defaultInterests.map(function (interest) {
         return (
-            `<div><input id="activity-${interest}" name="workout_interests" type="checkbox" value="${interest}">
-                 <label class="inline" for="${interest}">${interest}</label></div>`
+            `<div class="activity_entry"><input id="activity-${interest}" name="workout_interests" type="checkbox" value="${interest}">
+                 <label class="inline" for="activity-${interest}">${interest}</label></div>`
         )
     }).join('');
 
 
     html += `<div> + Add something else</div>
-             <div class="inline">Skip</div>
-             <div class="inline">Next</div>
-             <button type="submit">Done</button>`
+             <button class="button_submit" type="submit">Done</button>`
 
     const form = document.querySelector(".user_input");
     form.innerHTML = html;
 }
+
+
+// distance, price
+
+const slidePage = document.querySelector(".slide_page");
+const nextBtn = document.querySelector(".button_next");
+const skipBtn = document.querySelector(".button_skip");
+const submitBtn = document.querySelector(".button_submit");
+let current = 1;
+
+ /* form navigation */
+function onNextSelected(event) {
+    event.preventDefault();
+    if (current < 4) {
+        slidePage.style.marginLeft = `${current * -25}%`;
+        current += 1;
+    } else {
+        console.log("end of form reached");
+    }
+};
+
+function onSkipSelected(event) {
+    event.preventDefault();
+    // hide form entirely navigate to recommendations tab
+
+};
 
