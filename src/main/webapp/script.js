@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-let map;
+let map, input, autocomplete;
 
 // Attach your callback function to the `window` object
 window.initMap = function () {
@@ -20,6 +20,9 @@ window.initMap = function () {
         center: { lat: 40.7484405, lng: -73.9878584 },
         zoom: 4
     });
+    // Setting Up Auto-complete For Our Search box
+    input = document.getElementById("search");
+    autocomplete = new google.maps.places.Autocomplete(input);
 };
 
 let interests = ['Cycling', 'Running', 'Hiking', 'Yoga', 'Aerobics', 'Weight Lifting', 'Walking', 'Pilates'];
