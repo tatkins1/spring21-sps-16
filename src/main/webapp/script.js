@@ -20,6 +20,10 @@ window.initMap = function () {
         center: { lat: 40.7484405, lng: -73.9878584 },
         zoom: 4
     });
+
+    // auto complete location search
+    let input = document.getElementById("search_input");
+    var autocomplete = new google.maps.places.Autocomplete(input);
 };
 
 let interests = ['Cycling', 'Running', 'Hiking', 'Yoga', 'Aerobics', 'Weight Lifting', 'Walking', 'Pilates'];
@@ -46,7 +50,7 @@ function openMenu(event, tabName) {
 }
 
 
-function handleFormSubmit(event) {
+async function handleFormSubmit(event) {
     event.preventDefault();
     const data = new FormData(event.target);
 
@@ -58,7 +62,17 @@ function handleFormSubmit(event) {
     results = JSON.stringify(formJSON, null, 2);
     console.log("results", results);
 
-    // send over to api
+    // sends user's workout interests to end point servlet
+    const responseFromServer = await fetch('/user-workout-interests',
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: results,
+        });
+
+    console.log('server', responseFromServer);
 }
 
 
@@ -87,7 +101,7 @@ const skipBtn = document.querySelector(".button_skip");
 const submitBtn = document.querySelector(".button_submit");
 let current = 1;
 
- /* form navigation */
+/* form navigation */
 function onNextSelected(event) {
     event.preventDefault();
     if (current < 4) {
