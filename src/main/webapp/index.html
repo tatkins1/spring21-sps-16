@@ -8,17 +8,17 @@
 </head>
 
 <body>
-    <header>
+    <header id="header">
         <div class="container">
-            <div class="search-container">
-                <form action="">
-                    <input type="text" placeholder="Search.." name="search">
-                    <button type="submit">Submit</button>
+            <div ALIGN=CENTER>
+                <form class="searchbar">
+                    <input type="text" placeholder="Search.." id="search">
+                    <button type="submit"><img src="images/search.png" height="15px" width="15px"></button>
                 </form>
             </div>
             <div class="tabs">
                 <a role="button" tabindex="0" onclick="openMenu(event,  'interests')">What do you like to do</a>
-                <a role="button" tabindex="0" onclick="openMenu(event,  'recommendations')">Recommendations</a>
+                <a role="button" tabindex="0" onclick="openMenu(event,  'recommendations')" id="recommend">Recommendations</a>
                 <a role="button" tabindex="0" onclick="openMenu(event,  'explore')">Explore</a>
             </div>
         </div>
@@ -27,63 +27,16 @@
         <div class="tabcontent card_layout" id="interests">
             <h3 style=>What do you like to do?</h3>
             <div class="form_container">
-                <!-- Page 1 -->
                 <div class="page slide_page">
                     <form class="user_input" onsubmit="handleFormSubmit(event)">
-                        <div class="label">
-              Last Name</div>
-            <input type="text">
+                        <div class="label">Last Name</div>
+                        <input type="text">
                     </form>
-                    <div class="form_control">
-                        <div class="button_skip" onclick="onSkipSelected(event)">Skip</div>
-                        <div class="button_next" onclick="onNextSelected(event)">Next</div>
-                    </div>
-                </div>
-
-                <!-- Page 2-->
-                <div class="page">
-                    <form class="user_input" onsubmit="handleFormSubmit(event)">
-                    </form>
-                    <div class="form_control">
-                        <div class="button_skip" onclick="onSkipSelected(event)">Skip 2</div>
-                        <div class="button_next" onclick="onNextSelected(event)">Next2</div>
-                    </div>
-                </div>
-                
-                <!-- Page 3-->
-                <div class="page">
-                    <form class="user_input" onsubmit="handleFormSubmit(event)">
-                    </form>
-                    <div class="form_control">
-                        <div class="button_skip" onclick="onSkipSelected(event)">Skip3</div>
-                        <div class="button_next" onclick="onNextSelected(event)">Next3</div>
-                    </div>
-                </div>
-
-                 <!-- Page 4-->
-                <div class="page">
-                    <form class="user_input" onsubmit="handleFormSubmit(event)">
-                    </form>
-                    <div class="form_control">
-                        <div class="button_skip" onclick="onSkipSelected(event)">Skip4</div>
-                        <div class="button_next" onclick="onNextSelected(event)">Next4</div>
-                    </div>
                 </div>
             </div>
         </div>
-        <div class="tabcontent" id="recommendations">
-            <h3>Tab 2</h3>
-            <p>
-                lorem iLorem ipsum dolor sit amet, consectetur adipiscing elit,
-                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                consequat.
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                pariatur.
-                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-                est
-                laborum
-            </p>
+        <div class="tabcontent card_layout" id="recommendations">
+            <ul id="display-recommendations"></ul>
         </div>
         <div class="tabcontent" id="explore">
             <h3>Tab 3</h3>
@@ -104,7 +57,7 @@
     <footer id="footer">HELLO</footer>
 </body>
 <script async
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDZbsCASX6bRFXIojx2BUzeBcwI12oeuyU&callback=initMap">
-    </script>
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDZbsCASX6bRFXIojx2BUzeBcwI12oeuyU&libraries=places&callback=initMap">
+</script>
 <script src="script.js"></script>
 </html>
