@@ -12,6 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/*
+ * helper function to hide menus when user clicks elsewhere on screen
+ */
+window.onload = function () {
+    let interestForm = document.getElementById('interests');
+    let recommendations = document.getElementById('recommendations');
+    let tabs = this.document.querySelector('.tabs');
+
+    document.onclick = function (e) {
+        if (!interestForm.contains(event.target) && !tabs.contains(event.target)) {
+            interestForm.style.display = 'none';
+            tabs.children[0].classList.remove("active")
+        }
+
+        if (!recommendations.contains(event.target) && !tabs.contains(event.target)) {
+            recommendations.style.display = 'none';
+            tabs.children[1].classList.remove("active");
+        }
+    };
+};
+
 let map, input, autocomplete, service;
 
 // Attach your callback function to the `window` object
@@ -48,8 +69,8 @@ function openMenu(event, tabName) {
     if (tabName == "interests") {
         createUserInterestsForm(interests);
     }
-}
 
+}
 
 async function handleFormSubmit(event) {
     event.preventDefault();
@@ -74,13 +95,13 @@ async function handleFormSubmit(event) {
  * to the recommendations tab after the user chooses
  * his/her workout options by simulating a click event
  */
-function triggerAClick(buttonToBeClicked){
-  if (buttonToBeClicked.fireEvent) { buttonToBeClicked.fireEvent('onclick'); }
-  else {
-    var clickEvent = document.createEvent('Events');
-    clickEvent.initEvent('click', true, false);
-    buttonToBeClicked.dispatchEvent(clickEvent);
-  }
+function triggerAClick(buttonToBeClicked) {
+    if (buttonToBeClicked.fireEvent) { buttonToBeClicked.fireEvent('onclick'); }
+    else {
+        var clickEvent = document.createEvent('Events');
+        clickEvent.initEvent('click', true, false);
+        buttonToBeClicked.dispatchEvent(clickEvent);
+    }
 }
 
 /**
@@ -89,10 +110,10 @@ function triggerAClick(buttonToBeClicked){
  */
 function searchForPlaces(workOutType) {
     const request = {
-    location: new google.maps.LatLng(42.7013917,-73.6917296),
-    radius: '100',
-    query: workOutType
-  };
+        location: new google.maps.LatLng(42.7013917, -73.6917296),
+        radius: '100',
+        query: workOutType
+    };
     service.textSearch(request, displayResults);
 }
 
@@ -101,44 +122,47 @@ function searchForPlaces(workOutType) {
  * on the recommendations tab
  */
 function displayResults(results, status) {
-  if (status == google.maps.places.PlacesServiceStatus.OK) {   
-    const recommendationsListElement = document.getElementById('display-recommendations');
-    // The results returned are too many to be displayed so 
-    // we are displaying 6 for now.
-    var numOfElementsToDisplay = results.length;
-    if (numOfElementsToDisplay > 6) { numOfElementsToDisplay = 6; }
+    if (status == google.maps.places.PlacesServiceStatus.OK) {
+        const recommendationsListElement = document.getElementById('display-recommendations');
 
-    for (var i = 0; i < numOfElementsToDisplay; i++) {
-      recommendationsListElement.appendChild(createLocationElement(results[i]));
+        // The results returned are too many to be displayed so 
+        // we are displaying 6 for now.
+        var numOfElementsToDisplay = results.length;
+        if (numOfElementsToDisplay > 6) { numOfElementsToDisplay = 6; }
+
+        for (var i = 0; i < numOfElementsToDisplay; i++) {
+            recommendationsListElement.appendChild(createLocationElement(results[i]));
+            console.log(results[i]);
+        }
     }
-  }
 }
 
 function createLocationElement(location) {
+    console.log(location);
 
-  const locationElement = document.createElement('li');
-  locationElement.className = 'location';
+    const locationElement = document.createElement('li');
+    locationElement.className = 'location';
 
-  const nameElement = document.createElement('span');
-  nameElement.innerText = location.name;
+    const nameElement = document.createElement('span');
+    nameElement.innerText = location.name;
 
 
-  const visitButtonElement = document.createElement('button');
-  visitButtonElement.className = 'btn recommendation';
-  visitButtonElement.innerText = 'VISIT';
-  visitButtonElement.addEventListener('click', () => {
-    
-    const coordinates = location.geometry.location;
-    const marker = new google.maps.Marker({map, position: coordinates});
-    map.setCenter(coordinates);
-    map.setZoom(12);
-    
-  });
+    const visitButtonElement = document.createElement('button');
+    visitButtonElement.className = 'btn recommendation';
+    visitButtonElement.innerText = 'VISIT';
+    visitButtonElement.addEventListener('click', () => {
 
-  locationElement.appendChild(nameElement);
-  locationElement.appendChild(visitButtonElement);
+        const coordinates = location.geometry.location;
+        const marker = new google.maps.Marker({ map, position: coordinates });
+        map.setCenter(coordinates);
+        map.setZoom(12);
 
-  return locationElement;
+    });
+
+    locationElement.appendChild(nameElement);
+    locationElement.appendChild(visitButtonElement);
+
+    return locationElement;
 }
 
 
