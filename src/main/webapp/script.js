@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-let map;
+let map, input, autocomplete, service;
 
 // Attach your callback function to the `window` object
 window.initMap = function () {
@@ -20,10 +20,11 @@ window.initMap = function () {
         center: { lat: 40.7484405, lng: -73.9878584 },
         zoom: 4
     });
-
-    // auto complete location search
-    let input = document.getElementById("search_input");
-    var autocomplete = new google.maps.places.Autocomplete(input);
+    // This object allows us to look up places using the places API
+    service = new google.maps.places.PlacesService(map);
+    // Setting Up Auto-complete For Our Search box
+    input = document.getElementById("search");
+    autocomplete = new google.maps.places.Autocomplete(input);
 };
 
 let interests = ['Cycling', 'Running', 'Hiking', 'Yoga', 'Aerobics', 'Weight Lifting', 'Walking', 'Pilates'];
@@ -54,25 +55,90 @@ async function handleFormSubmit(event) {
     event.preventDefault();
     const data = new FormData(event.target);
 
-    const formJSON = Object.fromEntries(data.entries());
+    // retrieve the user's selected workout types from the form
+    let selectedExercises = data.getAll('workout_interests');
+    // The recommendations tab may be populated with results
+    // from the previous search so erase it before adding the new
+    // search results to it.
+    document.getElementById('display-recommendations').innerHTML = "";
+    // send the retrieved workout preferences to the maps API to
+    // search for locations that fit the desired preferences
+    for (var i = 0; i < selectedExercises.length; i++) {
+        searchForPlaces(selectedExercises[i]);
+    }
+    triggerAClick(document.getElementById('recommend'));
+}
 
-    // for multi-selects, we need special handling
-    formJSON.workout_interests = data.getAll('workout_interests');
+/**
+ * This function switches the html document's active tab
+ * to the recommendations tab after the user chooses
+ * his/her workout options by simulating a click event
+ */
+function triggerAClick(buttonToBeClicked){
+  if (buttonToBeClicked.fireEvent) { buttonToBeClicked.fireEvent('onclick'); }
+  else {
+    var clickEvent = document.createEvent('Events');
+    clickEvent.initEvent('click', true, false);
+    buttonToBeClicked.dispatchEvent(clickEvent);
+  }
+}
 
-    results = JSON.stringify(formJSON, null, 2);
-    console.log("results", results);
+/**
+ * This function retrieves a list of locations
+ * that have the workOutType the user requested
+ */
+function searchForPlaces(workOutType) {
+    const request = {
+    location: new google.maps.LatLng(42.7013917,-73.6917296),
+    radius: '100',
+    query: workOutType
+  };
+    service.textSearch(request, displayResults);
+}
 
-    // sends user's workout interests to end point servlet
-    const responseFromServer = await fetch('/user-workout-interests',
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: results,
-        });
+/**
+ * This function displays the results of searchForPlaces
+ * on the recommendations tab
+ */
+function displayResults(results, status) {
+  if (status == google.maps.places.PlacesServiceStatus.OK) {   
+    const recommendationsListElement = document.getElementById('display-recommendations');
+    // The results returned are too many to be displayed so 
+    // we are displaying 6 for now.
+    var numOfElementsToDisplay = results.length;
+    if (numOfElementsToDisplay > 6) { numOfElementsToDisplay = 6; }
 
-    console.log('server', responseFromServer);
+    for (var i = 0; i < numOfElementsToDisplay; i++) {
+      recommendationsListElement.appendChild(createLocationElement(results[i]));
+    }
+  }
+}
+
+function createLocationElement(location) {
+
+  const locationElement = document.createElement('li');
+  locationElement.className = 'location';
+
+  const nameElement = document.createElement('span');
+  nameElement.innerText = location.name;
+
+
+  const visitButtonElement = document.createElement('button');
+  visitButtonElement.className = 'btn recommendation';
+  visitButtonElement.innerText = 'VISIT';
+  visitButtonElement.addEventListener('click', () => {
+    
+    const coordinates = location.geometry.location;
+    const marker = new google.maps.Marker({map, position: coordinates});
+    map.setCenter(coordinates);
+    map.setZoom(12);
+    
+  });
+
+  locationElement.appendChild(nameElement);
+  locationElement.appendChild(visitButtonElement);
+
+  return locationElement;
 }
 
 
@@ -117,4 +183,5 @@ function onSkipSelected(event) {
     // hide form entirely navigate to recommendations tab
 
 };
+
 

@@ -22,19 +22,17 @@
 </head>
 
 <body>
-    <header>
+    <header id="header">
         <div class="container">
-            <div class="search_container">
-                <form class="search" action="/user_search">
-                    <input type="text" id="search_input" class="search_field"
-                        placeholder="Search location.." name="search">
-                    <button type="submit" class="search_button">
-                        <i class="fa fa-search"></i>
-                    </button>
+            <div ALIGN=CENTER>
+                <form class="searchbar">
+                    <input type="text" placeholder="Search.." id="search">
+                    <button type="submit"><img src="images/search.png" height="15px" width="15px"></button>
                 </form>
             </div>
             <div class="tabs">
                 <a role="button" tabindex="0" onclick="openMenu(event,  'interests')">What do you like to do</a>
+                <a role="button" tabindex="0" onclick="openMenu(event,  'recommendations')" id="recommend">Recommendations</a>
                 <a role="button" tabindex="0" onclick="openMenu(event,  'explore')">Explore</a>
             </div>
 
@@ -44,7 +42,6 @@
         <div class="tabcontent card_layout" id="interests">
             <h3 style=>What do you like to do?</h3>
             <div class="form_container">
-                <!-- Page 1 -->
                 <div class="page slide_page">
                     <form class="user_input" onsubmit="handleFormSubmit(event)">
                         <div class="label">
@@ -88,6 +85,15 @@
                 </div>
             </div>
         </div>
+                        <div class="label">Last Name</div>
+                        <input type="text">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="tabcontent card_layout" id="recommendations">
+            <ul id="display-recommendations"></ul>
+        </div>
         <div class="tabcontent" id="explore">
             <h3>Tab 3</h3>
             <p>
@@ -107,6 +113,7 @@
     <footer id="footer">HELLO</footer>
 </body>
 <script async
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDZbsCASX6bRFXIojx2BUzeBcwI12oeuyU&callback=initMap&libraries=places"></script>
-
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDZbsCASX6bRFXIojx2BUzeBcwI12oeuyU&libraries=places&callback=initMap">
+</script>
+<script src="script.js"></script>
 </html>
