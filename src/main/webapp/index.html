@@ -16,6 +16,7 @@
     <script src="https://use.fontawesome.com/45e39032a4.js"></script>
 
     <!-- Stylesheet & Scripts -->
+    <link rel="stylesheet" href="recommendation.css">
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
 
@@ -24,22 +25,21 @@
 <body>
     <header id="header">
         <div class="container">
-            <div ALIGN=CENTER>
-                <form class="searchbar">
-                    <input type="text" placeholder="Search.." id="search">
-                    <button type="submit"><img src="images/search.png" height="15px" width="15px"></button>
-                </form>
-            </div>
+            <form class="searchbar">
+                <input type="text" placeholder="Search workouts locations near you.." id="search">
+                <button type="submit"><img src="images/search.png" height="15px" width="15px"></button>
+            </form>
             <div class="tabs">
                 <a role="button" tabindex="0" onclick="openMenu(event,  'interests')">What do you like to do</a>
-                <a role="button" tabindex="0" onclick="openMenu(event,  'recommendations')" id="recommend">Recommendations</a>
+                <a role="button" tabindex="0" onclick="openMenu(event,  'recommendations')"
+                    id="recommend">Recommendations</a>
             </div>
         </div>
     </header>
 
     <div class="menu_container">
-        <div class="tabcontent card_layout" id="interests">
-            <h3 style=>Workout interests</h3>
+        <div class="card_layout_interests" id="interests">
+            <h3 class="card_heading">Workout interests</h3>
             <div class="form_container">
                 <div class="page slide_page">
                     <form class="user_input" onsubmit="handleFormSubmit(event)">
@@ -47,15 +47,17 @@
                 </div>
             </div>
         </div>
-        <div class="tabcontent card_layout" id="recommendations">
-            <ul id="display-recommendations"></ul>
+        <div class="card_layout_recs" id="recommendations">
+            <h3 class="card_heading">Suggested Places</h3>
+
+            <ul class="grid_view" id="display-recommendations"></ul>
         </div>
     </div>
     <div id="maps"></div>
-    <footer id="footer">HELLO</footer>
 </body>
 <script async
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDZbsCASX6bRFXIojx2BUzeBcwI12oeuyU&libraries=places&callback=initMap">
-</script>
+    </script>
 <script src="script.js"></script>
+
 </html>

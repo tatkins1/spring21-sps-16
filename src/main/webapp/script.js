@@ -52,7 +52,7 @@ let interests = ['Cycling', 'Running', 'Hiking', 'Yoga', 'Aerobics', 'Weight Lif
 
 function openMenu(event, tabName) {
     // find relevant nodes
-    const tabcontents = document.querySelectorAll(".tabcontent");
+    const tabcontents = document.querySelectorAll(".menu_container > div");
     const tablinks = document.querySelectorAll(".tabs a");
 
     // remove everything with tabcontent class */
@@ -132,24 +132,18 @@ function displayResults(results, status) {
 
         for (var i = 0; i < numOfElementsToDisplay; i++) {
             recommendationsListElement.appendChild(createLocationElement(results[i]));
-            console.log(results[i]);
         }
     }
 }
 
 function createLocationElement(location) {
-    console.log(location);
-
     const locationElement = document.createElement('li');
     locationElement.className = 'location';
-
-    const nameElement = document.createElement('span');
-    nameElement.innerText = location.name;
-
 
     const visitButtonElement = document.createElement('button');
     visitButtonElement.className = 'btn recommendation';
     visitButtonElement.innerText = 'VISIT';
+
     visitButtonElement.addEventListener('click', () => {
 
         const coordinates = location.geometry.location;
@@ -159,13 +153,55 @@ function createLocationElement(location) {
 
     });
 
-    locationElement.appendChild(nameElement);
     locationElement.appendChild(visitButtonElement);
+    
+    locationElement.innerHTML = createMarkUp(location);
 
     return locationElement;
 }
 
 
+function onVisitClick(event){
+    let latLngs = event.target.dataset.location;
+    latLngs = JSON.parse(latLngs);
+    const coordinates = latLngs.geometry.location;
+    const marker = new google.maps.Marker({ map, position: coordinates });
+    map.setCenter(coordinates);
+    map.setZoom(12);
+}
+
+function createMarkUp(location) {
+    const markup =
+        `<div class="rec_card">
+        <div class="rec_card-avatar"></div>
+        <div class="card-details">
+            <div class="name">${location.name}</div>
+            <div class="address">${location.formatted_address}</div>    
+            <div class="rec_card-rating">				
+                <div class="rating">
+                <span class="label">${parseInt(location.rating)}/5</span>
+                ${createRatings(parseInt(location.rating)).join('')}
+                </div>  
+            </div>
+
+            <button class="btn recommendation rec_card-rating" data-location='${JSON.stringify(location)}' onclick="onVisitClick(event)">VISIT</button>
+        </div>
+    </div>`
+
+    return markup;
+}
+
+function createRatings(ratings) {
+    ratingTags = []
+    for (rating = 0; rating < 5; rating++) {
+        if (rating < ratings) {
+            ratingTags.push(`<i style="color:wheat" class="fas fa-star"></i>`);
+        } else {
+            ratingTags.push(`<i style="color:wheat" class="far fa-star"></i>`);
+        }
+    }
+    return ratingTags;
+}
 function createUserInterestsForm(defaultInterests) {
     var html = defaultInterests.map(function (interest) {
         return (
@@ -176,7 +212,7 @@ function createUserInterestsForm(defaultInterests) {
 
 
     html += `<div> + Add something else</div>
-             <button class="button_submit" type="submit">Done</button>`
+             <button class="btn button_submit" type="submit">Done</button>`
 
     const form = document.querySelector(".user_input");
     form.innerHTML = html;
