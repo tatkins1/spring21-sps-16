@@ -1,7 +1,7 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing: 0;
+  box-sizing: border-box;
 }
 
 html,
@@ -9,56 +9,115 @@ body {
   width: 100%;
   height: 100%;
   font-family: sans-serif;
+  overflow: hidden;
+}
+/* scrollbars */
+/* width */
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+  border-radius:5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
 }
 
 /* TopBar */
 header {
-  background-color: burlywood;
+  background-color: #e0e0e0;
   display: flex;
   justify-content: center;
-  padding: 10px;
 }
 
 .container {
   display: flex;
   flex-direction: column;
-  align-content: center;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem 0 1rem;
 }
 
 header .tabs {
   display: flex;
+  margin-top: 0.5rem;
 }
 
+.search_container {
+  width: fit-content;
+  margin: 20px auto;
+}
 
-#search {width: 70%;}
+.searchbar {
+  width: 500px;
+}
+form .search {
+  width: 100%;
+  position: relative;
+  display: flex;
+}
+
+.search_field:focus {
+  color: #00b4cc;
+}
+
+input#search_input {
+  width: 100%;
+  border: 3px solid #00b4cc;
+  border-right: none;
+  padding: 5px;
+  height: 20px;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+  color: #9dbfaf;
+}
+
+button.search_button {
+  width: 40px;
+  height: 36px;
+  border: 1px solid #00b4cc;
+  background: #00b4cc;
+  text-align: center;
+  color: #fff;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  font-size: 20px;
+}
 
 header .tabs a {
-  padding: 10px 20px;
-  /* display: block; */
+    font-weight: 600;
+    padding: 10px 20px;
+    font-size: 16px;
+    white-space: nowrap;
+    cursor: pointer;
+    text-transform: uppercase;
+    color: #737B7D;
+    outline: none;
+}
+
+form.searchbar input[type="text"] {
+  padding: 20px;
   font-size: 15px;
-  white-space: nowrap;
-  cursor: pointer;
+  border: none;
+  float: left;
+  width: 85%;
   outline: none;
 }
 
-form.searchbar input[type=text] {
-  padding: 10px;
-  font-size: 15px;
-  border: 1px solid grey;
-  float: left;
-  width: 65%;
-  background: #f1f1f1;
-}
-
 form.searchbar button {
-  float: left;
-  width: 20%;
-  padding: 10px;
-  font-size: 10px;
-  background: #f1f1f1;
-  border: 1px solid grey;
-  border-left: none; /* Prevent double borders */
-  cursor: pointer;
+    padding: 19px;
+    border: none;
+    cursor: pointer;
 }
 
 form.searchbar button:hover {
@@ -79,96 +138,118 @@ form.searchbar::after {
 }
 
 .tabs a.active {
-  border-bottom: 4px solid #000000;
+  border-bottom: 4px solid rgb(47 47 47 / 87%);
 }
 
 /* Tab contents */
 .tabcontent {
-  padding: 40px;
-  max-width: 500px;
+  padding: 20px 40px;
+  max-width: 100%;
   display: none; /* default menu tabs removed */
   position: absolute;
   z-index: 1;
 }
 
-#maps {    
-  height: calc(100% - 116px);
+#maps {
+  height: calc(100% - 90px);
 }
 
 /* form css */
-.card_layout {
-  border-radius: 5px;
-  background-color: ghostwhite;
-  box-shadow: 0px 10px 40px 0px rgba(47, 47, 47, 0.1);
-  padding: 50px 35px 10px 35px;
-  display: block; /* DEBUG */
-  overflow: hidden; /* DEBUG- preven overflow */
+.card_layout_interests {
+  display: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 480px;
+  width:600px;
+  padding: 20px 40px;
+  max-width: 100%;
+  position: absolute;
+  z-index: 1;  
+  background: #FFFFFF;
+  box-shadow: 0px 5px 6px rgb(0 0 0 / 20%), 0px 3px 16px rgb(0 0 0 / 12%), 0px 9px 12px rgb(0 0 0 / 14%);
+  border-radius: 4px;
+  margin-top: 10px;
+
+}
+
+/* form css */
+.card_layout_recs {
+  display: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 480px;
+  width:fit-content;
+  padding: 20px 40px;
+  max-width: 100%;
+  position: absolute;
+  z-index: 1;  
+  background: #FFFFFF;
+  box-shadow: 0px 5px 6px rgb(0 0 0 / 20%), 0px 3px 16px rgb(0 0 0 / 12%), 0px 9px 12px rgb(0 0 0 / 14%);
+  border-radius: 4px;  
+  margin-top: 10px;
 }
 
 .location {
-    border: thin solid black;
-    display: flex;
-    margin: 10px;
-    padding: 10px;
+  display: flex;
+  margin: 10px;
+  padding: 10px;
 }
 
 .location span {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 
 /*This btn style was inspired by https://codepen.io/priosoft/pen/dMryaY*/
 .btn {
-  box-sizing: border-box;
-  background-color: burlywood;
-  border: 2px solid #e74c3c;
-  border-radius: 0.6em;
-  color: #e74c3c;
-  cursor: pointer;
-  display: flex;
-  padding: 5px;
-  text-decoration: none;
-  text-align: center;
+      font-weight: 700;
+    background-image: linear-gradient( 
+45deg
+ , #f7c568 50%, transparent 50%);
+    background-position: 100%;
+    background-size: 400%;
+    transition: background 300ms ease-in-out;
+    border: none;
+    text-transform: uppercase;
+    border-radius: 50px;
+    cursor: pointer;
+    padding: 5px;
+    text-align: center;
+    width: 5rem;
+    font-size: 14px;
+    transition: background 300ms ease-in-out;
+    outline:0;
 }
 
 /*This btn style was inspired by https://codepen.io/priosoft/pen/dMryaY*/
-.btn:hover, .btn:focus {
-  color: #fff;
+.btn:hover {
+  color: #1e2633;
   outline: 0;
-}
-
-/*This btn style was inspired by https://codepen.io/priosoft/pen/dMryaY*/
-.recommendation {
-  border-color: #f1c40f;
-  color: blue;
-  background-image: linear-gradient(45deg, #f1c40f 50%, transparent 50%);
-  background-position: 100%;
-  background-size: 400%;
-  transition: background 300ms ease-in-out;
-}
-
-/*This button style was gotten from https://codepen.io/priosoft/pen/dMryaY*/
-.recommendation:hover {
   background-position: 0;
 }
 
-.card_layout > h3 {
+.card_heading {
   font-size: 35px;
   font-weight: 600;
   margin: 0 0 30px 0;
   text-align: center;
 }
 
+.grid_view {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
 .activity_entry {
   background-color: #e0e0e0;
   display: block;
-  width: fit-content;
+  width: 100%;
   border-radius: 4px;
 }
 
 .activity_entry label {
   border-radius: 4px;
   padding: 20px 30px;
-  width: 150px;
+  width: 100%;
   display: block;
   font-size: 18px;
   line-height: 20px;
@@ -177,7 +258,6 @@ form.searchbar::after {
   z-index: 2;
   transition: color 200ms ease-in;
   overflow: hidden;
-  
 }
 
 .activity_entry label:before {
@@ -189,8 +269,6 @@ form.searchbar::after {
   position: absolute;
   left: 50%;
   top: 50%;
-  /* transform: translate(-50%, -50%) scale3d(1, 1, 1); */
-  /* transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1); */
   opacity: 0;
   z-index: -1;
 }
@@ -220,24 +298,16 @@ form.searchbar::after {
   opacity: 1;
 }
 .activity_entry input:checked ~ label:after {
-      background-color: #f8f8ff;
-    border-color: #f8f8ff;
-    background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23373F41' fill-rule='nonzero'/%3E%3C/svg%3E ");
-    background-repeat: no-repeat;
-    background-position: 3px 3.5px;
-    transform: translateY(-50%);
-    transition: all 200ms ease-in;
+  background-color: #f8f8ff;
+  border-color: #f8f8ff;
+  background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23373F41' fill-rule='nonzero'/%3E%3C/svg%3E ");
+  background-repeat: no-repeat;
+  background-position: 3px 3.5px;
+  transform: translateY(-50%);
+  transition: all 200ms ease-in;
 }
 .activity_entry input {
-  /* width: 32px; */
-  /* height: 32px; */
-  /* order: 1; */
-  /* z-index: 2; */
   position: absolute;
-  /* right: 30px; */
-  /* top: 50%; */
-  /* transform: translateY(-50%); */
-  /* cursor: pointer; */
   visibility: hidden;
 }
 
@@ -254,19 +324,23 @@ form.searchbar::after {
   grid-template-columns: 1fr 1fr;
 }
 
+.user_input .button_submit {
+    justify-self: end;  /* align to end of column */
+}
 
 .form_control {
-    display: flex;
-    justify-content: space-between;
-    margin: 10px;
-}
-/* skip button */
-.button_skip{
-   font-weight: 600;
-   cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  margin: 10px;
 }
 
-.button_next{
+/* skip button */
+.button_skip {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button_next {
   font-weight: 600;
   cursor: pointer;
 }
@@ -276,15 +350,7 @@ form.searchbar::after {
   width: 400%; /* larger width for multiple sections*/
 }
 
-.form_container .page{
+.form_container .page {
   width: 25%;
   transition: margin-left 0.3s ease-in-out;
-}
-
-#footer {
-  background-color: burlywood;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  position: fixed;
 }
