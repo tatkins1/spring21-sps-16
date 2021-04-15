@@ -13,7 +13,10 @@
 // limitations under the License.
 
 
-let map, input, autocomplete, service, geoCoder, position = null;
+let map, input, autocomplete, service, geoCoder, markers = [], position = null;
+let directionsService, directionsRenderer;
+//tells the displayResult function which header to add to the recommendations tab
+let index = 0, workOutInterest = [];
 
 /*
  * helper function to hide menus when user clicks elsewhere on screen
@@ -43,6 +46,11 @@ window.initMap = function () {
         center: { lat: 40.7484405, lng: -73.9878584 },
         zoom: 4
     });
+    // The objects allows us to call the Directions API for a path
+    // from one location to the other
+    directionsService = new google.maps.DirectionsService();
+    directionsRenderer = new google.maps.DirectionsRenderer();
+    directionsRenderer.setMap(map);
     // This object allows us to look up places using the places API
     service = new google.maps.places.PlacesService(map);
     //Initialize a geocoding object for converting addresses into co-ordinates
@@ -78,7 +86,7 @@ function openMenu(event, tabName) {
 }
 
 
-async function handleFormSubmit(event) {
+function handleFormSubmit(event) {
     event.preventDefault();
     const data = new FormData(event.target);
 
@@ -87,7 +95,9 @@ async function handleFormSubmit(event) {
     // The recommendations tab may be populated with results
     // from the previous search so erase it before adding the new
     // search results to it.
-    document.getElementById('display-recommendations').innerHTML = "";
+    document.getElementById('recommendations').innerHTML = `<h3 class="card_heading">Suggested Places</h3>`;
+    workOutInterest = [];
+    index = 0;
     // Retrieve the user's location to be used as the starting point 
     // for conducting the fitness location searches
     getUsersLocation();
@@ -96,6 +106,7 @@ async function handleFormSubmit(event) {
     // send the retrieved workout preferences to the maps API to
     // search for locations that fit the desired preferences
     for (var i = 0; i < selectedExercises.length; i++) {
+        workOutInterest.push(selectedExercises[i]);
         searchForPlaces(selectedExercises[i], position);
     }
     triggerAClick(document.getElementById('recommend'));
@@ -114,6 +125,14 @@ function triggerAClick(buttonToBeClicked) {
         clickEvent.initEvent('click', true, false);
         buttonToBeClicked.dispatchEvent(clickEvent);
     }
+}
+
+
+function showWorkOutType(workOutType) {
+  let tag = document.createElement("H3");
+  var workOutTypeTag = document.createTextNode(workOutType + ':');
+  tag.appendChild(workOutTypeTag);
+  document.getElementById('recommendations').appendChild(tag);
 }
 
 
@@ -137,7 +156,11 @@ function searchForPlaces(workOutType, focalPoint) {
  */
 function displayResults(results, status) {
     if (status == google.maps.places.PlacesServiceStatus.OK) {
-        const recommendationsListElement = document.getElementById('display-recommendations');
+        // Create a header for the work out type
+        showWorkOutType(workOutInterest[index]);
+        // Create the list element for the results to be added
+        const recommendationsListElement = document.createElement('ul');
+        recommendationsListElement.className = 'grid_view';
 
         // The results returned are too many to be displayed so 
         // we are displaying 6 for now.
@@ -147,6 +170,8 @@ function displayResults(results, status) {
         for (var i = 0; i < numOfElementsToDisplay; i++) {
             recommendationsListElement.appendChild(createLocationElement(results[i]));
         }
+        index++;
+        document.getElementById('recommendations').appendChild(recommendationsListElement);
     }
 }
 
@@ -154,21 +179,6 @@ function displayResults(results, status) {
 function createLocationElement(location) {
     const locationElement = document.createElement('li');
     locationElement.className = 'location';
-
-    const visitButtonElement = document.createElement('button');
-    visitButtonElement.className = 'btn recommendation';
-    visitButtonElement.innerText = 'VISIT';
-
-    visitButtonElement.addEventListener('click', () => {
-
-        const coordinates = location.geometry.location;
-        const marker = new google.maps.Marker({ map, position: coordinates });
-        map.setCenter(coordinates);
-        map.setZoom(12);
-
-    });
-
-    locationElement.appendChild(visitButtonElement);
     
     locationElement.innerHTML = createMarkUp(location);
 
@@ -176,13 +186,48 @@ function createLocationElement(location) {
 }
 
 
+/**
+ * Clear the clutter of markers from the
+ * map so the user focuses on one place at a time
+ */
+function clearMarker() {
+  for (let i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
+}
+
+
+function getDirections(event){
+    let latLngs = event.target.dataset.location;
+    latLngs = JSON.parse(latLngs);
+    const coordinates = latLngs.geometry.location;
+    var request = {
+        origin: position,
+        destination: coordinates,
+        travelMode: 'DRIVING'
+    };
+    directionsService.route(request, routeFound); 
+    map.setCenter(coordinates);
+    map.setZoom(16);
+}
+
+
 function onVisitClick(event){
     let latLngs = event.target.dataset.location;
     latLngs = JSON.parse(latLngs);
     const coordinates = latLngs.geometry.location;
+    clearMarker();
+    const userPositionMarker = new google.maps.Marker({
+        map,
+        icon: {url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"},
+        animation: google.maps.Animation.DROP,
+        position: position,
+    });
     const marker = new google.maps.Marker({ map, position: coordinates });
+    markers.push(marker);
+    markers.push(userPositionMarker);
     map.setCenter(coordinates);
-    map.setZoom(12);
+    map.setZoom(17);
 }
 
 
@@ -196,16 +241,22 @@ function geoCodingCompletion(results, status) {
 }
 
 
+function routeFound(result, status) {
+    if (status == "OK") { directionsRenderer.setDirections(result); }
+}
+
+
 function sendUserANoticeToEnterAddress() {
   alert("Please use the search feature at the top to enter\
   the address to be used for searching");
 }
 
 
-function error(err) {
-    if (input.value.length === 0) {sendUserANoticeToEnterAddress();}
-    else { geocodeAddress(geoCoder, input.value.trim()); }
-}
+/**
+ * Get the user's location using address search
+ * if the browser doesn't support navigator.geolocation
+ */
+function error(err) { getLocationUsingSearchBar(); }
 
 
 function getUsersLocation(){
@@ -216,10 +267,15 @@ function getUsersLocation(){
     };
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(success, error, options);
-    } else {
-        if (input.value.length === 0) {sendUserANoticeToEnterAddress();}
-        else { geocodeAddress(geoCoder, input.value.trim()); }
-    }
+    } else { getLocationUsingSearchBar(); }
+
+}
+
+
+function getLocationUsingSearchBar() {
+    event.preventDefault();
+    if (input.value.length === 0) {sendUserANoticeToEnterAddress();}
+    else { geocodeAddress(geoCoder, input.value.trim()); }
 }
 
 
@@ -243,6 +299,7 @@ function createMarkUp(location) {
             </div>
 
             <button class="btn recommendation rec_card-rating" data-location='${JSON.stringify(location)}' onclick="onVisitClick(event)">VISIT</button>
+            <button class="btn recommendation rec_card-rating" data-location='${JSON.stringify(location)}' onclick="getDirections(event)">DIRECTION</button>
         </div>
     </div>`
 
