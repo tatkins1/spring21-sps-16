@@ -71,29 +71,6 @@ form .search {
   color: #00b4cc;
 }
 
-input#search_input {
-  width: 100%;
-  border: 3px solid #00b4cc;
-  border-right: none;
-  padding: 5px;
-  height: 20px;
-  border-radius: 5px 0 0 5px;
-  outline: none;
-  color: #9dbfaf;
-}
-
-button.search_button {
-  width: 40px;
-  height: 36px;
-  border: 1px solid #00b4cc;
-  background: #00b4cc;
-  text-align: center;
-  color: #fff;
-  border-radius: 0 5px 5px 0;
-  cursor: pointer;
-  font-size: 20px;
-}
-
 header .tabs a {
     font-weight: 600;
     padding: 10px 20px;
@@ -150,9 +127,7 @@ form.searchbar::after {
   z-index: 1;
 }
 
-#maps {
-  height: calc(100% - 90px);
-}
+#maps { height: calc(100% - 150px); }
 
 /* form css */
 .card_layout_interests {
