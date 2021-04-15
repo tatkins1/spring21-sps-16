@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-let map, input, autocomplete, service;
+let map, input, autocomplete, service, geoCoder, position = null;
 
 // Attach your callback function to the `window` object
 window.initMap = function () {
@@ -22,6 +22,8 @@ window.initMap = function () {
     });
     // This object allows us to look up places using the places API
     service = new google.maps.places.PlacesService(map);
+    //Initialize a geocoding object for converting addresses into co-ordinates
+    geoCoder = new google.maps.Geocoder();
     // Setting Up Auto-complete For Our Search box
     input = document.getElementById("search");
     autocomplete = new google.maps.places.Autocomplete(input);
@@ -61,10 +63,15 @@ function handleFormSubmit(event) {
     // from the previous search so erase it before adding the new
     // search results to it.
     document.getElementById('display-recommendations').innerHTML = "";
+    // Retrieve the user's location to be used as the starting point 
+    // for conducting the fitness location searches
+    getUsersLocation();
+    // Prompt the user for a valid address then terminate the function
+    if (position === null) { sendUserANoticeToEnterAddress(); return; }
     // send the retrieved workout preferences to the maps API to
     // search for locations that fit the desired preferences
     for (var i = 0; i < selectedExercises.length; i++) {
-        searchForPlaces(selectedExercises[i]);
+        searchForPlaces(selectedExercises[i], position);
     }
     triggerAClick(document.getElementById('recommend'));
 }
@@ -87,9 +94,9 @@ function triggerAClick(buttonToBeClicked){
  * This function retrieves a list of locations
  * that have the workOutType the user requested
  */
-function searchForPlaces(workOutType) {
+function searchForPlaces(workOutType, focalPoint) {
     const request = {
-    location: new google.maps.LatLng(42.7013917,-73.6917296),
+    location: focalPoint,
     radius: '100',
     query: workOutType
   };
@@ -141,6 +148,41 @@ function createLocationElement(location) {
   return locationElement;
 }
 
+function success(pos) {
+    position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+}
+
+function geoCodingCompletion(results, status) {
+    if (status === "OK") { position = results[0].geometry.location; }
+}
+
+function sendUserANoticeToEnterAddress() {
+  alert("Please use the search feature at the top to enter\
+  the address to be used for searching");
+}
+
+function error(err) {
+    if (input.value.length === 0) {sendUserANoticeToEnterAddress();}
+    else { geocodeAddress(geoCoder, input.value.trim()); }
+}
+
+function getUsersLocation(){
+    var options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+    };
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(success, error, options);
+    } else {
+        if (input.value.length === 0) {sendUserANoticeToEnterAddress();}
+        else { geocodeAddress(geoCoder, input.value.trim()); }
+    }
+}
+
+function geocodeAddress(geocoder, userAddress) {
+  geocoder.geocode({ address: userAddress }, geoCodingCompletion);
+}
 
 function createUserInterestsForm(defaultInterests) {
     var html = defaultInterests.map(function (interest) {
