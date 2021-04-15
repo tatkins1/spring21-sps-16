@@ -12,7 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 let map, input, autocomplete, service, geoCoder, position = null;
+
+/*
+ * helper function to hide menus when user clicks elsewhere on screen
+ */
+window.onload = function () {
+    let interestForm = document.getElementById('interests');
+    let recommendations = document.getElementById('recommendations');
+    let tabs = this.document.querySelector('.tabs');
+
+    document.onclick = function (e) {
+        if (!interestForm.contains(event.target) && !tabs.contains(event.target)) {
+            interestForm.style.display = 'none';
+            tabs.children[0].classList.remove("active")
+        }
+
+        if (!recommendations.contains(event.target) && !tabs.contains(event.target)) {
+            recommendations.style.display = 'none';
+            tabs.children[1].classList.remove("active");
+        }
+    };
+};
+
 
 // Attach your callback function to the `window` object
 window.initMap = function () {
@@ -31,9 +54,10 @@ window.initMap = function () {
 
 let interests = ['Cycling', 'Running', 'Hiking', 'Yoga', 'Aerobics', 'Weight Lifting', 'Walking', 'Pilates'];
 
+
 function openMenu(event, tabName) {
     // find relevant nodes
-    const tabcontents = document.querySelectorAll(".tabcontent");
+    const tabcontents = document.querySelectorAll(".menu_container > div");
     const tablinks = document.querySelectorAll(".tabs a");
 
     // remove everything with tabcontent class */
@@ -50,10 +74,11 @@ function openMenu(event, tabName) {
     if (tabName == "interests") {
         createUserInterestsForm(interests);
     }
+
 }
 
 
-function handleFormSubmit(event) {
+async function handleFormSubmit(event) {
     event.preventDefault();
     const data = new FormData(event.target);
 
@@ -76,19 +101,21 @@ function handleFormSubmit(event) {
     triggerAClick(document.getElementById('recommend'));
 }
 
+
 /**
  * This function switches the html document's active tab
  * to the recommendations tab after the user chooses
  * his/her workout options by simulating a click event
  */
-function triggerAClick(buttonToBeClicked){
-  if (buttonToBeClicked.fireEvent) { buttonToBeClicked.fireEvent('onclick'); }
-  else {
-    var clickEvent = document.createEvent('Events');
-    clickEvent.initEvent('click', true, false);
-    buttonToBeClicked.dispatchEvent(clickEvent);
-  }
+function triggerAClick(buttonToBeClicked) {
+    if (buttonToBeClicked.fireEvent) { buttonToBeClicked.fireEvent('onclick'); }
+    else {
+        var clickEvent = document.createEvent('Events');
+        clickEvent.initEvent('click', true, false);
+        buttonToBeClicked.dispatchEvent(clickEvent);
+    }
 }
+
 
 /**
  * This function retrieves a list of locations
@@ -103,68 +130,83 @@ function searchForPlaces(workOutType, focalPoint) {
     service.textSearch(request, displayResults);
 }
 
+
 /**
  * This function displays the results of searchForPlaces
  * on the recommendations tab
  */
 function displayResults(results, status) {
-  if (status == google.maps.places.PlacesServiceStatus.OK) {   
-    const recommendationsListElement = document.getElementById('display-recommendations');
-    // The results returned are too many to be displayed so 
-    // we are displaying 6 for now.
-    var numOfElementsToDisplay = results.length;
-    if (numOfElementsToDisplay > 6) { numOfElementsToDisplay = 6; }
+    if (status == google.maps.places.PlacesServiceStatus.OK) {
+        const recommendationsListElement = document.getElementById('display-recommendations');
 
-    for (var i = 0; i < numOfElementsToDisplay; i++) {
-      recommendationsListElement.appendChild(createLocationElement(results[i]));
+        // The results returned are too many to be displayed so 
+        // we are displaying 6 for now.
+        var numOfElementsToDisplay = results.length;
+        if (numOfElementsToDisplay > 6) { numOfElementsToDisplay = 6; }
+
+        for (var i = 0; i < numOfElementsToDisplay; i++) {
+            recommendationsListElement.appendChild(createLocationElement(results[i]));
+        }
     }
-  }
 }
+
 
 function createLocationElement(location) {
+    const locationElement = document.createElement('li');
+    locationElement.className = 'location';
 
-  const locationElement = document.createElement('li');
-  locationElement.className = 'location';
+    const visitButtonElement = document.createElement('button');
+    visitButtonElement.className = 'btn recommendation';
+    visitButtonElement.innerText = 'VISIT';
 
-  const nameElement = document.createElement('span');
-  nameElement.innerText = location.name;
+    visitButtonElement.addEventListener('click', () => {
 
+        const coordinates = location.geometry.location;
+        const marker = new google.maps.Marker({ map, position: coordinates });
+        map.setCenter(coordinates);
+        map.setZoom(12);
 
-  const visitButtonElement = document.createElement('button');
-  visitButtonElement.className = 'btn recommendation';
-  visitButtonElement.innerText = 'VISIT';
-  visitButtonElement.addEventListener('click', () => {
+    });
+
+    locationElement.appendChild(visitButtonElement);
     
-    const coordinates = location.geometry.location;
-    const marker = new google.maps.Marker({map, position: coordinates});
+    locationElement.innerHTML = createMarkUp(location);
+
+    return locationElement;
+}
+
+
+function onVisitClick(event){
+    let latLngs = event.target.dataset.location;
+    latLngs = JSON.parse(latLngs);
+    const coordinates = latLngs.geometry.location;
+    const marker = new google.maps.Marker({ map, position: coordinates });
     map.setCenter(coordinates);
     map.setZoom(12);
-    
-  });
-
-  locationElement.appendChild(nameElement);
-  locationElement.appendChild(visitButtonElement);
-
-  return locationElement;
 }
+
 
 function success(pos) {
     position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
 }
 
+
 function geoCodingCompletion(results, status) {
     if (status === "OK") { position = results[0].geometry.location; }
 }
+
 
 function sendUserANoticeToEnterAddress() {
   alert("Please use the search feature at the top to enter\
   the address to be used for searching");
 }
 
+
 function error(err) {
     if (input.value.length === 0) {sendUserANoticeToEnterAddress();}
     else { geocodeAddress(geoCoder, input.value.trim()); }
 }
+
 
 function getUsersLocation(){
     var options = {
@@ -180,9 +222,46 @@ function getUsersLocation(){
     }
 }
 
+
 function geocodeAddress(geocoder, userAddress) {
   geocoder.geocode({ address: userAddress }, geoCodingCompletion);
 }
+
+
+function createMarkUp(location) {
+    const markup =
+        `<div class="rec_card">
+        <div class="rec_card-avatar"></div>
+        <div class="card-details">
+            <div class="name">${location.name}</div>
+            <div class="address">${location.formatted_address}</div>    
+            <div class="rec_card-rating">				
+                <div class="rating">
+                <span class="label">${parseInt(location.rating)}/5</span>
+                ${createRatings(parseInt(location.rating)).join('')}
+                </div>  
+            </div>
+
+            <button class="btn recommendation rec_card-rating" data-location='${JSON.stringify(location)}' onclick="onVisitClick(event)">VISIT</button>
+        </div>
+    </div>`
+
+    return markup;
+}
+
+
+function createRatings(ratings) {
+    ratingTags = []
+    for (rating = 0; rating < 5; rating++) {
+        if (rating < ratings) {
+            ratingTags.push(`<i style="color:wheat" class="fas fa-star"></i>`);
+        } else {
+            ratingTags.push(`<i style="color:wheat" class="far fa-star"></i>`);
+        }
+    }
+    return ratingTags;
+}
+
 
 function createUserInterestsForm(defaultInterests) {
     var html = defaultInterests.map(function (interest) {
@@ -194,7 +273,7 @@ function createUserInterestsForm(defaultInterests) {
 
 
     html += `<div> + Add something else</div>
-             <button class="button_submit" type="submit">Done</button>`
+             <button class="btn button_submit" type="submit">Done</button>`
 
     const form = document.querySelector(".user_input");
     form.innerHTML = html;
