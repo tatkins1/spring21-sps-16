@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
+let map, input, autocomplete, service, geoCoder, position = null;
+
 /*
  * helper function to hide menus when user clicks elsewhere on screen
  */
@@ -33,7 +36,6 @@ window.onload = function () {
     };
 };
 
-let map, input, autocomplete, service;
 
 // Attach your callback function to the `window` object
 window.initMap = function () {
@@ -43,12 +45,15 @@ window.initMap = function () {
     });
     // This object allows us to look up places using the places API
     service = new google.maps.places.PlacesService(map);
+    //Initialize a geocoding object for converting addresses into co-ordinates
+    geoCoder = new google.maps.Geocoder();
     // Setting Up Auto-complete For Our Search box
     input = document.getElementById("search");
     autocomplete = new google.maps.places.Autocomplete(input);
 };
 
 let interests = ['Cycling', 'Running', 'Hiking', 'Yoga', 'Aerobics', 'Weight Lifting', 'Walking', 'Pilates'];
+
 
 function openMenu(event, tabName) {
     // find relevant nodes
@@ -72,6 +77,7 @@ function openMenu(event, tabName) {
 
 }
 
+
 async function handleFormSubmit(event) {
     event.preventDefault();
     const data = new FormData(event.target);
@@ -82,13 +88,19 @@ async function handleFormSubmit(event) {
     // from the previous search so erase it before adding the new
     // search results to it.
     document.getElementById('display-recommendations').innerHTML = "";
+    // Retrieve the user's location to be used as the starting point 
+    // for conducting the fitness location searches
+    getUsersLocation();
+    // Prompt the user for a valid address then terminate the function
+    if (position === null) { sendUserANoticeToEnterAddress(); return; }
     // send the retrieved workout preferences to the maps API to
     // search for locations that fit the desired preferences
     for (var i = 0; i < selectedExercises.length; i++) {
-        searchForPlaces(selectedExercises[i]);
+        searchForPlaces(selectedExercises[i], position);
     }
     triggerAClick(document.getElementById('recommend'));
 }
+
 
 /**
  * This function switches the html document's active tab
@@ -104,18 +116,20 @@ function triggerAClick(buttonToBeClicked) {
     }
 }
 
+
 /**
  * This function retrieves a list of locations
  * that have the workOutType the user requested
  */
-function searchForPlaces(workOutType) {
+function searchForPlaces(workOutType, focalPoint) {
     const request = {
-        location: new google.maps.LatLng(42.7013917, -73.6917296),
-        radius: '100',
-        query: workOutType
-    };
+    location: focalPoint,
+    radius: '100',
+    query: workOutType
+  };
     service.textSearch(request, displayResults);
 }
+
 
 /**
  * This function displays the results of searchForPlaces
@@ -135,6 +149,7 @@ function displayResults(results, status) {
         }
     }
 }
+
 
 function createLocationElement(location) {
     const locationElement = document.createElement('li');
@@ -170,6 +185,49 @@ function onVisitClick(event){
     map.setZoom(12);
 }
 
+
+function success(pos) {
+    position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+}
+
+
+function geoCodingCompletion(results, status) {
+    if (status === "OK") { position = results[0].geometry.location; }
+}
+
+
+function sendUserANoticeToEnterAddress() {
+  alert("Please use the search feature at the top to enter\
+  the address to be used for searching");
+}
+
+
+function error(err) {
+    if (input.value.length === 0) {sendUserANoticeToEnterAddress();}
+    else { geocodeAddress(geoCoder, input.value.trim()); }
+}
+
+
+function getUsersLocation(){
+    var options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+    };
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(success, error, options);
+    } else {
+        if (input.value.length === 0) {sendUserANoticeToEnterAddress();}
+        else { geocodeAddress(geoCoder, input.value.trim()); }
+    }
+}
+
+
+function geocodeAddress(geocoder, userAddress) {
+  geocoder.geocode({ address: userAddress }, geoCodingCompletion);
+}
+
+
 function createMarkUp(location) {
     const markup =
         `<div class="rec_card">
@@ -191,6 +249,7 @@ function createMarkUp(location) {
     return markup;
 }
 
+
 function createRatings(ratings) {
     ratingTags = []
     for (rating = 0; rating < 5; rating++) {
@@ -202,6 +261,8 @@ function createRatings(ratings) {
     }
     return ratingTags;
 }
+
+
 function createUserInterestsForm(defaultInterests) {
     var html = defaultInterests.map(function (interest) {
         return (
@@ -217,31 +278,3 @@ function createUserInterestsForm(defaultInterests) {
     const form = document.querySelector(".user_input");
     form.innerHTML = html;
 }
-
-
-// distance, price
-
-const slidePage = document.querySelector(".slide_page");
-const nextBtn = document.querySelector(".button_next");
-const skipBtn = document.querySelector(".button_skip");
-const submitBtn = document.querySelector(".button_submit");
-let current = 1;
-
-/* form navigation */
-function onNextSelected(event) {
-    event.preventDefault();
-    if (current < 4) {
-        slidePage.style.marginLeft = `${current * -25}%`;
-        current += 1;
-    } else {
-        console.log("end of form reached");
-    }
-};
-
-function onSkipSelected(event) {
-    event.preventDefault();
-    // hide form entirely navigate to recommendations tab
-
-};
-
-
