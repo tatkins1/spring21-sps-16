@@ -1,0 +1,64 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --rec_card-size: 300px;
+}
+
+.rec_card {
+    width: calc(var(--rec_card-size));
+    min-height: fit-content;
+    padding:15px;
+    border-radius: 0.75rem;
+    background: #1e2633;
+    display: grid;
+    grid-template-columns: 2fr 6fr;
+    color: white;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.rec_card:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+.rec_card-details {
+  padding: 1rem;
+}
+
+.name {
+  font-size: 30px;
+  font-weight: 550;
+  margin-top: 0.5em;
+  margin-bottom: 1rem;
+  color: #dad9d9;
+}
+
+.address {
+  font-weight: 600;
+  margin-top: 0.5rem;
+  margin-bottom:0.5rem;
+}
+
+.rec_card-avatar {
+  margin:1rem;
+  display: grid;
+  border-radius:10%;
+  height:calc(var(--rec_card-size) * 0.5 );
+  background-image: 
+  url("https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/generic_business-71.png");
+  background-size: contain;
+  background-repeat: no-repeat, repeat;
+}
+
+.rec_card-rating {
+  margin-top: 0.5rem;
+  display: grid;
+  grid-auto-flow: column;
+}
+
+.rating .label {
+  margin-top: 0.15rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
